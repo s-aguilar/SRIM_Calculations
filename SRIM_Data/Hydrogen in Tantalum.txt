@@ -1,0 +1,56 @@
+ ==================================================================
+              SRIM version ---> SRIM-2013.00
+              Calc. date   ---> July 17, 2019 
+ ==================================================================
+
+ Disk File Name = SRIM Outputs\Hydrogen in Tantalum.txt
+
+ Ion = Hydrogen [1] , Mass = 1.008 amu
+
+ Target Density =  1.6601E+01 g/cm3 = 5.5248E+22 atoms/cm3
+ ======= Target  Composition ========
+    Atom   Atom   Atomic    Mass     
+    Name   Numb   Percent   Percent  
+    ----   ----   -------   -------  
+     Ta     73    100.00    100.00   
+ ====================================
+ Bragg Correction = 0.00%
+ Stopping Units =  keV / micron   
+ See bottom of Table for other Stopping units 
+
+        Ion        dE/dx      dE/dx     Projected  Longitudinal   Lateral
+       Energy      Elec.      Nuclear     Range     Straggling   Straggling
+  --------------  ---------- ---------- ----------  ----------  ----------
+   1.00 MeV   1.089E+02  1.034E-01    6.25 um     7581 A      1.12 um  
+   1.10 MeV   1.048E+02  9.590E-02    7.13 um     8321 A      1.25 um  
+   1.20 MeV   1.007E+02  8.949E-02    8.05 um     9072 A      1.38 um  
+   1.30 MeV   9.718E+01  8.395E-02    9.01 um     9835 A      1.51 um  
+   1.40 MeV   9.400E+01  7.911E-02   10.00 um     1.06 um     1.65 um  
+   1.50 MeV   9.106E+01  7.483E-02   11.03 um     1.14 um     1.79 um  
+   1.60 MeV   8.835E+01  7.103E-02   12.09 um     1.22 um     1.94 um  
+   1.70 MeV   8.584E+01  6.763E-02   13.18 um     1.30 um     2.09 um  
+   1.80 MeV   8.350E+01  6.457E-02   14.31 um     1.38 um     2.24 um  
+   2.00 MeV   7.928E+01  5.926E-02   16.65 um     1.56 um     2.55 um  
+   2.25 MeV   7.469E+01  5.381E-02   19.76 um     1.80 um     2.96 um  
+   2.50 MeV   7.073E+01  4.935E-02   23.06 um     2.05 um     3.38 um  
+   2.75 MeV   6.725E+01  4.562E-02   26.54 um     2.30 um     3.82 um  
+   3.00 MeV   6.417E+01  4.245E-02   30.19 um     2.55 um     4.28 um  
+   3.25 MeV   6.141E+01  3.972E-02   34.03 um     2.81 um     4.75 um  
+   3.50 MeV   5.893E+01  3.734E-02   38.03 um     3.07 um     5.24 um  
+   3.75 MeV   5.668E+01  3.525E-02   42.20 um     3.34 um     5.75 um  
+   4.00 MeV   5.463E+01  3.340E-02   46.53 um     3.61 um     6.27 um  
+   4.50 MeV   5.101E+01  3.026E-02   55.68 um     4.26 um     7.35 um  
+   5.00 MeV   4.793E+01  2.769E-02   65.46 um     4.92 um     8.49 um  
+-----------------------------------------------------------
+ Multiply Stopping by        for Stopping Units
+ -------------------        ------------------
+  1.0000E-01                 eV / Angstrom 
+  1.0000E+00                keV / micron   
+  1.0000E+00                MeV / mm       
+  6.0239E-04                keV / (ug/cm2) 
+  6.0239E-04                MeV / (mg/cm2) 
+  6.0239E-01                keV / (mg/cm2) 
+  1.8100E-01                 eV / (1E15 atoms/cm2)
+  2.2731E-01                L.S.S. reduced units
+ ==================================================================
+ (C) 1984,1989,1992,1998,2008 by J.P. Biersack and J.F. Ziegler
