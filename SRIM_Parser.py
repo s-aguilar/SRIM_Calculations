@@ -5,8 +5,8 @@ import numpy as np
 class SRIM_Table(object):
     def __init__(self,fname):
 
-        # TO DO: 1. Incorporate some way of determining the stopping units used (EASY/ INCOMLPETE)
-        #        2. convert lists to numpy arrays (NOT STARTED)
+        # TO DO: 1. Speed up this process?
+        #        2. Handle edge cases
 
         sci = '(\d+\.\d+E[+-]*\d+)' # check sign of power
         flo = '(\d+\.\d+|\d+)'      # '|' is OR. Check whether it is a float or an int
@@ -32,36 +32,74 @@ class SRIM_Table(object):
                         'm':1e3, 'mm':1, 'um':1e-3, 'A':1e-7}
 
         # keV / (ug/cm2)
-        units_keVugcm2 = {'eV':1e-3, 'keV':1, 'MeV':1e3}
+        units_keVugcm2 = {'eV':1e-3, 'keV':1, 'MeV':1e3, \
+                        'm':1e-2, 'mm':1e1, 'um':1e4, 'A':1e8}
 
         # MeV / (mg/cm2)
-        units_MeVmgcm2 = {'eV':1e-6, 'keV':1e-3, 'MeV':1}
+        units_MeVmgcm2 = {'eV':1e-6, 'keV':1e-3, 'MeV':1, \
+                        'm':1e-2, 'mm':1e1, 'um':1e4, 'A':1e8}
 
         # keV / (mg/cm2)
-        units_keVmgcm2 = {'eV':1e-3, 'keV':1, 'MeV':1e3}
+        units_keVmgcm2 = {'eV':1e-3, 'keV':1, 'MeV':1e3, \
+                        'm':1e-2, 'mm':1e1, 'um':1e4, 'A':1e8}
 
         # eV / (1E15 atoms/cm^2)
-        units_eVatomscm2 = {'eV':1, 'keV':1e3, 'MeV':1e6}
+        units_eVatomscm2 = {'eV':1, 'keV':1e3, 'MeV':1e6, \
+                        'm':1e-2, 'mm':1e1, 'um':1e4, 'A':1e8}
 
 
         # dictionary of units
-        dictUnits = {'eV / A':units_eVa}
+        dictUnits = {'eV / A':units_eVa,'keV / micron':units_keVum,
+            'MeV / mm':units_MeVmm,'keV / (ug/cm2)':units_keVugcm2,
+            'MeV / (mg/cm2)':units_MeVmgcm2,'keV / (mg/cm2)':units_keVmgcm2,
+            'eV / (1E15 atoms/cm2)':units_eVatomscm2}
+
 
         with open(fname) as f:
+
+            def convert(line):
+                """
+                Clean up the line and extract conversion factor
+                """
+
+                lineSplit = line.split()
+                return np.float64(lineSplit[0])
+
+
             for line in f:
                 res = re.match(fmt,line)
+
+                # Acquire the stopping units
                 stopUnit = re.search(' Stopping Units = ',line)
-                # if stopUnit: print(line[19:-1])
-                if stopUnit: units = str(line[19:-1])
-                if res is None: continue
+                if stopUnit:
+                    units = str(line[19:-1]).strip()    # strip white space
+                    dictOfUnits = dictUnits[units]
+                    continue
+
+                # Acquire the conversion table between units
+                conv = re.search(' Multiply Stopping by        for Stopping Units',line)
+                if conv:
+                    f.readline()    # Read empty line -------------------        ------------------
+                    dictConversion = {'eV / A':convert(f.readline()),
+                        'keV / micron':convert(f.readline()),
+                        'MeV / mm':convert(f.readline()),
+                        'keV / (ug/cm2)':convert(f.readline()),
+                        'MeV / (mg/cm2)':convert(f.readline()),
+                        'keV / (mg/cm2)':convert(f.readline()),
+                        'eV / (1E15 atoms/cm2)':convert(f.readline()) }
+                    # print(f.readline())   # L.S.S reduced units not interested in these
+                    break
+
+                elif res is None: continue
 
                 # The '-u' suffix denotes unit and L is length/range
                 E,Eu, dE_dX1, dE_dX2, L, Lu = res.groups()[:6]
 
                 # print(E,Eu,dE_dX1, dE_dX2, L, Lu)
-                Total_dEdX = float(dE_dX1) + float(dE_dX2)
-                data.append({'E':float(E)*units_keVum[Eu],'Range':float(L)*units_keVum[Lu],\
-                'dXdE':1./float(Total_dEdX),'dEdX':float(Total_dEdX)})
+                Total_dEdX = np.float64(dE_dX1) + np.float64(dE_dX2)
+                data.append({'E':np.float64(E)*dictOfUnits[Eu],
+                'Range':np.float64(L)*dictOfUnits[Lu],
+                'dXdE':1./Total_dEdX,'dEdX':Total_dEdX})
 
         if not data:
             raise Exception("Input a valid table")
@@ -76,6 +114,9 @@ class SRIM_Table(object):
                 fill_value='extrapolate' )
         self.E2R = interp1d(*zip(*[(_['E'],_['Range'],) for _ in data]),
                 fill_value='extrapolate' )
+        self.units = units
+        self.dictOfUnits = dictOfUnits
+        self.dictConversion = dictConversion
 
 
     def GetE(self,E0,X):
