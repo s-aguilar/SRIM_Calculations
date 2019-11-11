@@ -9,7 +9,7 @@ from SRIM_Parser import SRIM_Table
 
 
 # Constants
-_c = 3.0e8              # m / s
+_c = 299792458          # m / s
 _U = 1.66053906660E-24  # g
 _avo = 6.02214076E23    # particles / mol
 
